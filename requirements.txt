@@ -1,0 +1,30 @@
+pandas~=2.2.1
+openai~=1.41.0
+python-dotenv~=1.0.1
+requests~=2.31.0
+urllib3~=2.2.2
+splunk-sdk~=2.1.0
+colorama~=0.4.6
+yaml~=0.2.5
+pyyaml~=6.0.1
+streamlit~=1.37.1
+
+# PDF Processing for Vector Database
+PyPDF2>=3.0.0
+PyMuPDF>=1.23.0
+
+# Text Processing and Chunking for Vector Database
+langchain>=0.1.0
+nltk>=3.8.1
+
+# Vector Database
+chromadb>=0.4.0
+
+# Embeddings for Vector Database
+sentence-transformers>=2.2.0
+
+# Progress Tracking for Vector Database
+tqdm>=4.65.0
+
+# Additional utilities for Vector Database
+numpy>=1.24.0

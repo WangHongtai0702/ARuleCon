@@ -1,0 +1,10 @@
+{
+  "total_files_processed": 0,
+  "total_chunks_created": 0,
+  "siem_breakdown": {},
+  "vector_database_info": {
+    "total_databases": 0,
+    "databases": {},
+    "base_path": "vector_db"
+  }
+}
