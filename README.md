@@ -145,45 +145,6 @@ The application can be configured through `settings.py`:
 - **Vector Database Paths**: Configure vector database locations
 - **Supported File Extensions**: Define supported file types per SIEM
 
-## 📊 Features in Detail
-
-### Rule Conversion
-
-- **IR-based Conversion**: Uses Intermediate Representation for accurate translation
-- **Multi-step Process**: IR generation → Direct conversion → Syntax optimization → Semantic optimization
-- **Error Handling**: Comprehensive error handling and logging
-- **Progress Tracking**: Real-time conversion progress and statistics
-
-### Rule Generation
-
-- **Natural Language Input**: Generate rules from descriptive text
-- **AI Agent Support**: Step-by-step rule generation with AI assistance
-- **Multiple SIEM Support**: Generate rules for different platforms
-
-### Vector Database
-
-- **RAG Integration**: Retrieval-Augmented Generation for enhanced rule understanding
-- **Document Processing**: Automatic processing of SIEM documentation
-- **Semantic Search**: Find similar rules and patterns
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- OpenAI for providing the GPT models
-- Streamlit for the web interface framework
-- The security community for rule samples and documentation
-
 ## 📞 Support
 
 For support, questions, or feature requests, please open an issue on GitHub.
