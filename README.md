@@ -13,41 +13,6 @@ ARuleCon is an intelligent security rule conversion platform that enables seamle
 - **Vector Database**: RAG (Retrieval-Augmented Generation) support for enhanced rule understanding
 - **Web Interface**: User-friendly Streamlit-based web application
 
-## 🏗️ Architecture
-
-The project follows a modular architecture with the following key components:
-
-- **Core Engine** (`src/core/`): Rule conversion logic, IR generation, and optimization
-- **LLM Integration** (`src/llms/`): AI model clients and prompt management
-- **Web Interface** (`src/pages/`): Streamlit-based user interface
-- **Data Processing** (`src/utils/`): Utilities for data handling and validation
-- **Rule Types** (`src/schemas/`): Data models for different SIEM rule formats
-
-## 📋 Supported Conversions
-
-| Source Platform    | Target Platform    | Status |
-| ------------------ | ------------------ | ------ |
-| Splunk             | Microsoft Sentinel | ✅     |
-| Splunk             | Google Chronicle   | ✅     |
-| Splunk             | IBM QRadar         | ✅     |
-| Splunk             | RSA NetWitness     | ✅     |
-| Microsoft Sentinel | Splunk             | ✅     |
-| Microsoft Sentinel | Google Chronicle   | ✅     |
-| Microsoft Sentinel | IBM QRadar         | ✅     |
-| Microsoft Sentinel | RSA NetWitness     | ✅     |
-| Google Chronicle   | Splunk             | ✅     |
-| Google Chronicle   | Microsoft Sentinel | ✅     |
-| Google Chronicle   | IBM QRadar         | ✅     |
-| Google Chronicle   | RSA NetWitness     | ✅     |
-| IBM QRadar         | Splunk             | ✅     |
-| IBM QRadar         | Microsoft Sentinel | ✅     |
-| IBM QRadar         | Google Chronicle   | ✅     |
-| IBM QRadar         | RSA NetWitness     | ✅     |
-| RSA NetWitness     | Splunk             | ✅     |
-| RSA NetWitness     | Microsoft Sentinel | ✅     |
-| RSA NetWitness     | Google Chronicle   | ✅     |
-| RSA NetWitness     | IBM QRadar         | ✅     |
-
 ## 🛠️ Installation
 
 1. **Clone the repository**
