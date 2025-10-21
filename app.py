@@ -1,9 +1,6 @@
 import streamlit as st
 import os
-from src.pages.rule_generation import page_rule_generation
 from src.pages.rule_conversion import page_rule_conversion
-from src.pages.rule_ir_generation import page_rule_ir_generation
-from src.pages.semantic_optimization_test import page_semantic_optimization_test
 from src.llms.client import refresh_client
 
 
@@ -16,20 +13,11 @@ def main_page():
     )
     model_openai = st.sidebar.selectbox(
         "OpenAI Model",
-        ("gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"),
+        ("gpt-5-mini", "gpt-5", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"),
     )
 
-    # Add sidebar page switching
-    page = st.sidebar.selectbox(
-        "Select Function",
-        [
-            "Rule Generation",
-            "Rule Conversion",
-            "Rule IR Generation",
-            "Semantic Optimization Test",
-        ],
-        key="page_selector",
-    )
+    # Only show Rule Conversion
+    page = "Rule Conversion"
 
     settings = {
         "model": model_openai,
@@ -64,15 +52,8 @@ def main_page():
             refresh_client()
             st.session_state["CURRENT_API_KEY"] = api_key_openai
 
-    # Display different functions based on selected page
-    if page == "Rule Conversion":
-        page_rule_conversion(model_openai)
-    elif page == "Rule Generation":
-        page_rule_generation(model_openai)
-    elif page == "Rule IR Generation":
-        page_rule_ir_generation(model_openai)
-    elif page == "Semantic Optimization Test":
-        page_semantic_optimization_test(model_openai)
+    # Display Rule Conversion page
+    page_rule_conversion(model_openai)
 
 
 if __name__ == "__main__":
