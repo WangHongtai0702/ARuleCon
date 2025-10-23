@@ -48,7 +48,7 @@ def analyze_rule(rule_content: str, model: str) -> str:
 
     try:
         response = client.chat.completions.create(
-            model=model, messages=messages, temperature=0.1
+            model=model, messages=messages
         )
 
         return response.choices[0].message.content
@@ -118,7 +118,7 @@ def generate_rule_from_ir(ir_data: dict, target_rule_type: str, model: str) -> s
 
     try:
         response = client.chat.completions.create(
-            model=model, messages=messages, temperature=0.1
+            model=model, messages=messages
         )
 
         generated_rule = response.choices[0].message.content
@@ -222,7 +222,6 @@ def generate_ir(
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            temperature=0.1,
             response_format={"type": "json_object"},
         )
 

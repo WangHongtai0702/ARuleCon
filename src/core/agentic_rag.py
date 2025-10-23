@@ -659,7 +659,6 @@ class AgenticRAGOptimizer:
                     {"role": "system", "content": get_agentic_rag_system_prompt()},
                     {"role": "user", "content": prompt},
                 ],
-                temperature=0.3,
                 max_tokens=max_tokens,
             )
             return response.choices[0].message.content
@@ -673,7 +672,6 @@ class AgenticRAGOptimizer:
                         {"role": "system", "content": get_agentic_rag_system_prompt()},
                         {"role": "user", "content": prompt},
                     ],
-                    temperature=0.3,
                     max_tokens=max_tokens,
                 )
                 return response.choices[0].message.content

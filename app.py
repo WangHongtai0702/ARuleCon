@@ -22,7 +22,6 @@ def main_page():
     settings = {
         "model": model_openai,
         "model_provider": "openai",
-        "temperature": 0.3,
     }
     st.session_state["OPENAI_API_KEY"] = api_key_openai
     os.environ["OPENAI_API_KEY"] = st.session_state["OPENAI_API_KEY"]
@@ -34,7 +33,7 @@ def main_page():
 
     # Initialize session state from .env
     st.session_state["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY", "")
-    st.session_state["DEFAULT_MODEL"] = os.getenv("MODEL_NAME", "gpt-4-turbo")
+    st.session_state["DEFAULT_MODEL"] = os.getenv("MODEL_NAME", "gpt-4o")
 
     # Initialize current API key if not set
     if "CURRENT_API_KEY" not in st.session_state:
