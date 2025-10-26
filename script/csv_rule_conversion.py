@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
-# 添加项目根目录到Python路径
+# Add project root directory to Python path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 sys.path.append(str(project_root / "src"))
@@ -20,7 +20,7 @@ from src.utils.conversion_logger import ConversionLogger
 
 
 class CSVRuleConverter:
-    """基于CSV输入的规则转换器"""
+    """CSV-based rule converter"""
 
     def __init__(self):
         self.rule_converter = RuleConverter()
@@ -37,11 +37,11 @@ class CSVRuleConverter:
     def load_csv_rules(
         self, csv_path: str, rule_column: str
     ) -> tuple[List[Dict[str, Any]], pd.DataFrame]:
-        """从CSV文件加载规则，返回规则列表和DataFrame"""
+        """Load rules from CSV file, return rule list and DataFrame"""
         try:
             df = pd.read_csv(csv_path)
             
-            # 检查列是否存在
+            # Check if column exists
             if rule_column not in df.columns:
                 raise ValueError(f"Column '{rule_column}' not found in CSV")
             
@@ -54,7 +54,7 @@ class CSVRuleConverter:
                     "all_data": row.to_dict(),
                 }
                 
-                # 如果有其他有用的列，也添加到规则数据中
+                # Add other columns to rule data if available
                 for col in df.columns:
                     if col != rule_column and col:
                         rule_data[col] = row[col]
@@ -71,7 +71,7 @@ class CSVRuleConverter:
     def convert_single_rule(
         self, source_rule: Dict[str, Any], source_type: str, target_type: str, model: str = "gpt-4o-mini"
     ) -> Dict[str, Any]:
-        """转换单个规则"""
+        """Convert a single rule"""
         result = {
             "source_rule": source_rule,
             "conversion_info": {
@@ -87,7 +87,7 @@ class CSVRuleConverter:
         }
 
         try:
-            # 1. 生成IR
+            # 1. Generate IR
             print(f"  Generating IR for: {source_rule['rule_name']}")
             ir_result = generate_ir(
                 rule_content=source_rule["rule_content"],
@@ -100,7 +100,7 @@ class CSVRuleConverter:
                 "metadata": {},
             }
 
-            # 2. 直接转换
+            # 2. Direct conversion
             print(f"  Converting IR to {target_type}: {source_rule['rule_name']}")
             conversion_result = generate_rule_from_ir(
                 ir_data=ir_result, target_rule_type=target_type, model=model
@@ -111,7 +111,7 @@ class CSVRuleConverter:
                 "metadata": {},
             }
 
-            # 3. 语法优化
+            # 3. Syntax optimization
             print(f"  Applying syntax optimization: {source_rule['rule_name']}")
             try:
                 todo_list = self.syntax_optimizer.generate_optimization_todo_list(
@@ -162,7 +162,7 @@ class CSVRuleConverter:
 
             result["syntax_optimization"] = syntax_result
 
-            # 4. 语义优化
+            # 4. Semantic optimization
             print(f"  Applying semantic optimization: {source_rule['rule_name']}")
             try:
                 semantic_result = self.semantic_optimizer.optimize_rule_semantics(
@@ -202,11 +202,11 @@ class CSVRuleConverter:
         target_type: str,
         target_column_name: str = None,
     ) -> str:
-        """将转换结果保存回CSV文件"""
+        """Save conversion results back to CSV file"""
         if target_column_name is None:
             target_column_name = f"converted_rule_{target_type}"
         
-        # 添加转换结果列到DataFrame
+        # Add conversion results to DataFrame
         converted_rules = []
         for result in conversion_results:
             if result.get("semantic_optimization", {}).get("optimized_rule"):
@@ -221,7 +221,7 @@ class CSVRuleConverter:
         
         df[target_column_name] = converted_rules
         
-        # 保存到新文件（添加_timestamp后缀）
+        # Save to new file (add timestamp suffix)
         from datetime import datetime
         original_path = Path(csv_path)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -241,12 +241,12 @@ class CSVRuleConverter:
         model: str = "gpt-4o-mini",
         save_to_csv: bool = True,
     ) -> str:
-        """批量转换规则"""
+        """Batch convert rules"""
         print(f"Starting batch conversion from CSV: {csv_path}")
         print(f"Source type: {source_type} -> Target type: {target_type}")
         print(f"Rule column: {rule_column}")
 
-        # 从CSV加载规则
+        # Load rules from CSV
         print(f"Loading rules from CSV...")
         source_rules, original_df = self.load_csv_rules(csv_path, rule_column)
 
@@ -256,7 +256,7 @@ class CSVRuleConverter:
 
         print(f"Found {len(source_rules)} rules in CSV")
 
-        # 转换规则
+        # Convert rules
         conversion_results = []
         successful_conversions = 0
 
@@ -273,7 +273,7 @@ class CSVRuleConverter:
             if not conversion_result["errors"]:
                 successful_conversions += 1
 
-        # 将转换结果保存回CSV
+        # Save conversion results back to CSV
         csv_output_path = None
         if save_to_csv:
             try:
@@ -296,23 +296,23 @@ class CSVRuleConverter:
 
 
 def main():
-    """主函数"""
+    """Main function"""
     parser = argparse.ArgumentParser(
-        description="基于CSV输入的批量规则转换工具"
+        description="Batch rule conversion tool based on CSV input"
     )
     parser.add_argument(
         "--csv",
         "-f",
         type=str,
         required=True,
-        help="CSV文件路径",
+        help="CSV file path",
     )
     parser.add_argument(
         "--column",
         "-c",
         type=str,
         required=True,
-        help="包含规则的列名称",
+        help="Column name containing rules",
     )
     parser.add_argument(
         "--source",
@@ -325,7 +325,7 @@ def main():
             "RSA NetWitness",
         ],
         required=True,
-        help="源规则类型",
+        help="Source rule type",
     )
     parser.add_argument(
         "--target",
@@ -338,36 +338,36 @@ def main():
             "RSA NetWitness",
         ],
         required=True,
-        help="目标规则类型",
+        help="Target rule type",
     )
     parser.add_argument(
         "--model",
         "-m",
         type=str,
         default="gpt-4o-mini",
-        help="使用的模型 (默认: gpt-4o-mini)",
+        help="Model to use (default: gpt-4o-mini)",
     )
     parser.add_argument(
         "--csv-output-column",
         type=str,
-        help="转换结果列的名称 (默认: converted_rule_{target_type})",
+        help="Column name for conversion results (default: converted_rule_{target_type})",
     )
 
     args = parser.parse_args()
 
-    # 验证参数
+    # Validate arguments
     if args.source == args.target:
         print("Error: Source and target cannot be the same")
         return
 
-    # 检查CSV文件是否存在
+    # Check if CSV file exists
     if not Path(args.csv).exists():
         print(f"Error: CSV file not found: {args.csv}")
         return
 
     converter = CSVRuleConverter()
 
-    # 执行转换
+    # Execute conversion
     try:
         output_path = converter.batch_convert(
             csv_path=args.csv,
