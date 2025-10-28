@@ -5,6 +5,7 @@ import sys
 import json
 import argparse
 import pandas as pd
+import csv
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Optional
@@ -39,7 +40,8 @@ class CSVRuleConverter:
     ) -> tuple[List[Dict[str, Any]], pd.DataFrame]:
         """Load rules from CSV file, return rule list and DataFrame"""
         try:
-            df = pd.read_csv(csv_path)
+            # Read CSV with proper quoting to handle commas in fields
+            df = pd.read_csv(csv_path, quoting=csv.QUOTE_ALL)
             
             # Check if column exists
             if rule_column not in df.columns:

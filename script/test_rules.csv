@@ -5,7 +5,7 @@ Unauthorized Access,index=windows | search event_type=4648 AND user!=null | stat
 DNS Exfiltration,index=dns | search query=*.exe AND response_code!=0 | stats count by query,Detects potential DNS exfiltration attempts,Threat Intel Team,"dns,exfiltration"
 File Access Violation,index=file | search action=read AND file_path=*password* | stats count by user,Detects suspicious file access patterns,Data Protection Team,"file,compliance"
 Database Query Anomaly,index=database | search query_type!=SELECT | stats count by user,Detects non-standard database queries,Database Team,"database,anomaly"
-Web Attack Signature,index=web | search status_code IN (403,404) AND user_agent=*bot* | stats count by src_ip,Identifies potential web-based attacks,Web Security Team,"web,attack"
+Web Attack Signature,index=web | search status_code IN (403,404) AND user_agent=*bot* | stats count by src_ip,Identifies potential web-based attacks,Web Security Team
 Network Traffic Anomaly,index=network | search protocol=TCP AND duration<5 | stats count by dst_ip,Detects unusual network traffic patterns,Network Team,"network,anomaly"
 User Account Compromise,index=authentication | search action=login AND location!=USA | stats count by user,Detects login attempts from unusual locations,Security Team,"authentication,compromise"
 Process Execution Anomaly,index=process | search command_line=*.bat AND parent_process!=cmd.exe | stats count by host,Detects unusual process executions,Endpoint Security,"process,execution"
