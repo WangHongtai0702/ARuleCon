@@ -1619,7 +1619,7 @@ Analyze these results and determine if the two rules are semantically equivalent
             """
 
             # Get optimized rule from LLM
-            response = self._call_openai_api(optimization_prompt, max_tokens=2000)
+            response = self._call_openai_api(optimization_prompt)
 
             if response:
                 # Extract the optimized rule from response
@@ -1904,7 +1904,6 @@ Format: ```{target_rule_type.lower()}
                     },
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=2000,
             )
             return response.choices[0].message.content
 
@@ -1920,7 +1919,6 @@ Format: ```{target_rule_type.lower()}
                         },
                         {"role": "user", "content": prompt},
                     ],
-                    max_tokens=2000,
                 )
                 return response.choices[0].message.content
 
@@ -1941,7 +1939,6 @@ Format: ```{target_rule_type.lower()}
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                max_tokens=2000,
             )
             return response.choices[0].message.content
 
@@ -1951,7 +1948,6 @@ Format: ```{target_rule_type.lower()}
                 response = self.client.ChatCompletion.create(
                     model=self.model,
                     messages=messages,
-                    max_tokens=2000,
                 )
                 return response.choices[0].message.content
 
@@ -2251,7 +2247,6 @@ class SyntaxRuleOptimizer:
                     {"role": "system", "content": get_system_prompt()},
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=2000,
             )
             return response.choices[0].message.content
 
@@ -2264,7 +2259,6 @@ class SyntaxRuleOptimizer:
                         {"role": "system", "content": get_system_prompt()},
                         {"role": "user", "content": prompt},
                     ],
-                    max_tokens=2000,
                 )
                 return response.choices[0].message.content
 

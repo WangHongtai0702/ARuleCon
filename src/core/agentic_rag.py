@@ -376,7 +376,7 @@ class AgenticRAGOptimizer:
             """
 
             # Get keyword adjustment from LLM
-            response = self._call_openai_api(reflection_prompt, max_tokens=500)
+            response = self._call_openai_api(reflection_prompt)
 
             if response:
                 try:
@@ -465,7 +465,7 @@ class AgenticRAGOptimizer:
             )
 
             # Get optimization from LLM
-            response = self._call_openai_api(optimization_prompt, max_tokens=2000)
+            response = self._call_openai_api(optimization_prompt)
 
             if response:
                 # Extract the optimized rule from response
@@ -544,7 +544,7 @@ class AgenticRAGOptimizer:
             {{"score": 0.9}}
             """
 
-            response = self._call_openai_api(evaluation_prompt, max_tokens=100)
+            response = self._call_openai_api(evaluation_prompt)
 
             if response:
                 try:
@@ -604,7 +604,7 @@ class AgenticRAGOptimizer:
             Keep it concise and technical.
             """
 
-            response = self._call_openai_api(explanation_prompt, max_tokens=300)
+            response = self._call_openai_api(explanation_prompt)
             return (
                 response
                 if response
@@ -649,7 +649,7 @@ class AgenticRAGOptimizer:
             )
             return None
 
-    def _call_openai_api(self, prompt: str, max_tokens: int = 1000) -> Optional[str]:
+    def _call_openai_api(self, prompt: str) -> Optional[str]:
         """Call OpenAI API with compatibility for both old and new versions."""
         try:
             # Try new version API first
@@ -659,7 +659,6 @@ class AgenticRAGOptimizer:
                     {"role": "system", "content": get_agentic_rag_system_prompt()},
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=max_tokens,
             )
             return response.choices[0].message.content
 
@@ -672,7 +671,6 @@ class AgenticRAGOptimizer:
                         {"role": "system", "content": get_agentic_rag_system_prompt()},
                         {"role": "user", "content": prompt},
                     ],
-                    max_tokens=max_tokens,
                 )
                 return response.choices[0].message.content
 
