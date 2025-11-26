@@ -150,7 +150,7 @@ class ConversionLogger:
             result_dir: Directory to save result files
         """
         self.result_dir = Path(result_dir)
-        self.result_dir.mkdir(exist_ok=True)
+        self.result_dir.mkdir(parents=True, exist_ok=True)
         self.logger = logging.getLogger(__name__)
 
         # Current conversion log
