@@ -221,7 +221,16 @@ class BatchRuleConverter:
             print(
                 f"\nConverting rule {i}/{len(source_rules)}: {source_rule['rule_name']}"
             )
-
+            if source_rule["rule_content"] is None:
+                continue
+            if source_rule["rule_content"] == "":
+                continue
+            if source_rule["rule_content"] == "null":
+                continue
+            if source_rule["rule_content"] == "undefined":
+                continue
+            if source_rule["rule_content"] == "NaN":
+                continue
             conversion_result = self.convert_single_rule(
                 source_rule, source_type, target_type
             )
