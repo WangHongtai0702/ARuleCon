@@ -48,11 +48,19 @@ class CSVRuleConverter:
                 raise ValueError(f"Column '{rule_column}' not found in CSV")
             
             rules = []
-            for idx, row in df.iterrows():
+            rule_counter = 0
+            for pos, (idx, row) in enumerate(df.iterrows()):
+                # Skip empty rows
+                rule_value = row[rule_column]
+                if pd.isna(rule_value) or (isinstance(rule_value, str) and not rule_value.strip()):
+                    continue
+                
+                rule_counter += 1
                 rule_data = {
-                    "rule_name": f"Rule_{idx + 1}",
+                    "rule_name": f"Rule_{rule_counter}",
                     "rule_content": str(row[rule_column]),
-                    "row_number": idx + 1,
+                    "row_number": pos + 1,  # Original CSV row number (1-based)
+                    "dataframe_index": idx,  # Store original DataFrame index for matching
                     "all_data": row.to_dict(),
                 }
                 
@@ -208,20 +216,25 @@ class CSVRuleConverter:
         if target_column_name is None:
             target_column_name = f"converted_rule_{target_type}"
         
-        # Add conversion results to DataFrame
-        converted_rules = []
-        for result in conversion_results:
-            if result.get("semantic_optimization", {}).get("optimized_rule"):
-                rule = result["semantic_optimization"]["optimized_rule"]
-            elif result.get("syntax_optimization", {}).get("optimized_rule"):
-                rule = result["syntax_optimization"]["optimized_rule"]
-            elif result.get("direct_conversion", {}).get("converted_rule"):
-                rule = result["direct_conversion"]["converted_rule"]
-            else:
-                rule = "ERROR: Conversion failed"
-            converted_rules.append(rule)
+        # Initialize the column with empty values
+        df[target_column_name] = ""
         
-        df[target_column_name] = converted_rules
+        # Add conversion results to DataFrame using dataframe_index to match
+        for result in conversion_results:
+            source_rule = result.get("source_rule", {})
+            df_idx = source_rule.get("dataframe_index")
+            
+            if df_idx is not None and df_idx in df.index:
+                if result.get("semantic_optimization", {}).get("optimized_rule"):
+                    rule = result["semantic_optimization"]["optimized_rule"]
+                elif result.get("syntax_optimization", {}).get("optimized_rule"):
+                    rule = result["syntax_optimization"]["optimized_rule"]
+                elif result.get("direct_conversion", {}).get("converted_rule"):
+                    rule = result["direct_conversion"]["converted_rule"]
+                else:
+                    rule = "ERROR: Conversion failed"
+                
+                df.at[df_idx, target_column_name] = rule
         
         # Save to new file (add timestamp suffix)
         from datetime import datetime
