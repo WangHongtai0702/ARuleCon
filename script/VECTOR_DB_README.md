@@ -1,19 +1,19 @@
-# 向量数据库构建脚本
+# Vector Database Build Script
 
-## 概述
+## Overview
 
-这个脚本用于处理 `dataset/documentations` 目录中的 PDF 文档，进行智能分块和向量化，构建一个用于 RAG 应用的向量数据库。
+This script processes PDF documents in the `dataset/documentations` directory, performs intelligent chunking and vectorization, and builds a vector database for RAG applications.
 
-## 功能特性
+## Features
 
-### 🔍 **智能文档分块**
+### 🔍 **Intelligent Document Chunking**
 
-- **基于标题的分块**: 自动识别 markdown 风格的标题结构
-- **基于目录的分块**: 检测文档目录结构
-- **基于编号章节的分块**: 识别数字编号的章节
-- **语义单元分块**: 按段落和句子进行智能分块
+- **Header-based Chunking**: Automatically identifies markdown-style header structures
+- **TOC-based Chunking**: Detects document table of contents structure
+- **Numbered Section Chunking**: Identifies numerically numbered sections
+- **Semantic Unit Chunking**: Intelligent chunking by paragraphs and sentences
 
-### 📚 **多 SIEM 支持**
+### 📚 **Multi-SIEM Support**
 
 - Splunk
 - Microsoft Sentinel
@@ -21,172 +21,172 @@
 - Google Chronicle
 - RSA NetWitness
 
-### 🗄️ **向量数据库**
+### 🗄️ **Vector Database**
 
-- 使用 ChromaDB 作为向量存储
-- **多集合架构**: 每个 SIEM 拥有独立的集合
-- 支持持久化存储
-- 集成 sentence-transformers 进行向量化
+- Uses ChromaDB as vector storage
+- **Multi-collection Architecture**: Each SIEM has its own independent collection
+- Supports persistent storage
+- Integrates sentence-transformers for vectorization
 
-### 📁 **文件夹结构组织**
+### 📁 **Folder Structure Organization**
 
 ```
 vector_db/
-├── Splunk/                    # Splunk 相关文档和集合
-├── Microsoft Sentinel/        # Microsoft Sentinel 相关文档和集合
-├── IBM QRadar/               # IBM QRadar 相关文档和集合
-├── Google Chronicle/          # Google Chronicle 相关文档和集合
-├── RSA NetWitness/           # RSA NetWitness 相关文档和集合
-└── chroma.sqlite3            # ChromaDB 数据库文件
+├── Splunk/                    # Splunk related documents and collections
+├── Microsoft Sentinel/        # Microsoft Sentinel related documents and collections
+├── IBM QRadar/               # IBM QRadar related documents and collections
+├── Google Chronicle/          # Google Chronicle related documents and collections
+├── RSA NetWitness/           # RSA NetWitness related documents and collections
+└── chroma.sqlite3            # ChromaDB database file
 ```
 
-## 安装依赖
+## Installation
 
-### 1. 安装 Python 依赖
+### 1. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. 脚本会自动：
+### 2. The Script Will Automatically:
 
-- 扫描 `dataset/documentations` 目录
-- 处理所有 PDF 文件
-- 进行智能分块
-- 构建向量数据库
-- 为每个 SIEM 创建独立的集合和文件夹
+- Scan the `dataset/documentations` directory
+- Process all PDF files
+- Perform intelligent chunking
+- Build the vector database
+- Create independent collections and folders for each SIEM
 
-## 使用方法
+## Usage
 
-### 1. **构建向量数据库**
+### 1. **Build Vector Database**
 
 ```bash
 cd script
 python build_vector_db.py
 ```
 
-### 2. **查询向量数据库**
+### 2. **Query Vector Database**
 
 ```bash
 cd script
 python query_vector_db.py
 ```
 
-### 3. **测试数据库结构**
+### 3. **Test Database Structure**
 
 ```bash
 cd script
 python test_vector_db_structure.py
 ```
 
-## 分块策略
+## Chunking Strategies
 
-### 1. **基于标题的分块 (Header-based Chunking)**
+### 1. **Header-based Chunking**
 
-适用于有明确标题结构的文档：
+Suitable for documents with clear header structures:
 
 ```markdown
-# 主标题
+# Main Title
 
-内容...
+Content...
 
-## 子标题
+## Subtitle
 
-更多内容...
+More content...
 
-### 三级标题
+### Third-level Title
 
-详细内容...
+Detailed content...
 ```
 
-### 2. **基于目录的分块 (TOC-based Chunking)**
+### 2. **TOC-based Chunking**
 
-检测文档中的目录结构，按章节进行分块。
+Detects table of contents structure in documents and chunks by sections.
 
-### 3. **基于编号章节的分块 (Numbered Section Chunking)**
+### 3. **Numbered Section Chunking**
 
-识别数字编号的章节结构：
+Identifies numerically numbered section structures:
 
 ```
-1. 第一章
+1. Chapter One
 
-内容...
+Content...
 
-2. 第二章
+2. Chapter Two
 
-更多内容...
+More content...
 ```
 
-### 4. **语义单元分块 (Semantic Unit Chunking)**
+### 4. **Semantic Unit Chunking**
 
-当文档结构不明确时，按段落和句子进行智能分块。
+When document structure is unclear, performs intelligent chunking by paragraphs and sentences.
 
-## 配置参数
+## Configuration Parameters
 
-### 分块参数
+### Chunking Parameters
 
 ```python
 processor = PDFDocumentProcessor(
-    chunk_size=1000,      # 每个块的最大字符数
-    chunk_overlap=200     # 块之间的重叠字符数
+    chunk_size=1000,      # Maximum characters per chunk
+    chunk_overlap=200     # Overlapping characters between chunks
 )
 ```
 
-### 向量数据库参数
+### Vector Database Parameters
 
 ```python
 vector_db = VectorDatabaseBuilder(
-    db_path="./vector_db"  # 数据库存储路径
+    db_path="./vector_db"  # Database storage path
 )
 ```
 
-## 输出结构
+## Output Structure
 
-### 1. **向量数据库**
+### 1. **Vector Database**
 
-- 位置: `./vector_db/`
-- 格式: ChromaDB 持久化存储
-- 集合结构: 每个 SIEM 一个独立集合
+- Location: `./vector_db/`
+- Format: ChromaDB persistent storage
+- Collection Structure: One independent collection per SIEM
   - `siem_splunk`
   - `siem_microsoft_sentinel`
   - `siem_ibm_qradar`
   - `siem_google_chronicle`
   - `siem_rsa_netwitness`
 
-### 2. **处理报告**
+### 2. **Processing Report**
 
-- 文件: `processing_summary.json`
-- 内容: 处理统计、SIEM 分类、数据库信息、输出结构
+- File: `processing_summary.json`
+- Content: Processing statistics, SIEM classification, database information, output structure
 
-### 3. **日志文件**
+### 3. **Log Files**
 
-- 文件: `vector_db_build.log`
-- 内容: 详细的处理日志
+- File: `vector_db_build.log`
+- Content: Detailed processing logs
 
-## 查询功能
+## Query Functions
 
-### 1. **SIEM 特定查询**
+### 1. **SIEM-Specific Query**
 
 ```python
-# 查询特定 SIEM 的文档
+# Query documents for a specific SIEM
 results = vector_db.search("security rule", siem_name="Splunk", n_results=5)
 ```
 
-### 2. **跨 SIEM 查询**
+### 2. **Cross-SIEM Query**
 
 ```python
-# 在所有 SIEM 中搜索
+# Search across all SIEMs
 results = vector_db.search("security rule", n_results=10)
 ```
 
-### 3. **集合信息查询**
+### 3. **Collection Information Query**
 
 ```python
-# 获取所有集合的信息
+# Get information for all collections
 info = vector_db.get_collection_info()
 ```
 
-## 处理摘要
+## Processing Summary
 
 ```
 ==================================================
@@ -214,7 +214,7 @@ Vector database ready for RAG applications!
 Each SIEM has its own collection and directory structure.
 ```
 
-### 向量数据库信息
+### Vector Database Information
 
 ```json
 {
@@ -233,102 +233,102 @@ Each SIEM has its own collection and directory structure.
 }
 ```
 
-## 高级用法
+## Advanced Usage
 
-### 1. **批量处理特定 SIEM**
+### 1. **Batch Process Specific SIEM**
 
 ```python
 from build_vector_db import PDFDocumentProcessor, VectorDatabaseBuilder
 
-# 只处理 Splunk 文档
+# Process only Splunk documents
 processor = PDFDocumentProcessor()
 vector_db = VectorDatabaseBuilder("./vector_db")
 
-# 处理特定 SIEM
+# Process specific SIEM
 siem_name = "Splunk"
-# ... 处理逻辑
+# ... processing logic
 ```
 
-### 2. **自定义分块策略**
+### 2. **Custom Chunking Strategy**
 
 ```python
-# 创建自定义分块器
+# Create custom chunker
 processor = PDFDocumentProcessor(
-    chunk_size=500,      # 更小的块
-    chunk_overlap=100    # 更少的重叠
+    chunk_size=500,      # Smaller chunks
+    chunk_overlap=100    # Less overlap
 )
 ```
 
-## 常见问题
+## Common Issues
 
-1. **PDF 文本提取失败**
-
-   ```
-   错误: Error extracting text from PDF
-   解决: 脚本会自动使用 PyPDF2 作为备选方案
-   ```
-
-2. **依赖安装失败**
+1. **PDF Text Extraction Failure**
 
    ```
-   错误: ModuleNotFoundError
-   解决: 确保安装了所有依赖包
+   Error: Error extracting text from PDF
+   Solution: The script will automatically use PyPDF2 as a fallback
    ```
 
-3. **内存不足**
+2. **Dependency Installation Failure**
 
    ```
-   错误: MemoryError
-   解决: 减少 chunk_size 或分批处理大文档
+   Error: ModuleNotFoundError
+   Solution: Ensure all dependency packages are installed
    ```
 
-## 故障排除
+3. **Insufficient Memory**
 
-### 启用详细日志
+   ```
+   Error: MemoryError
+   Solution: Reduce chunk_size or process large documents in batches
+   ```
+
+## Troubleshooting
+
+### Enable Verbose Logging
 
 ```python
 import logging
 logging.basicConfig(level=logging.DEBUG)
 ```
 
-### 1. **分块策略优化**
+### 1. **Chunking Strategy Optimization**
 
-- 对于技术文档，使用较小的 chunk_size (500-1000)
-- 对于长文档，增加 chunk_overlap (200-300)
+- For technical documents, use smaller chunk_size (500-1000)
+- For long documents, increase chunk_overlap (200-300)
 
-### 2. **内存管理**
+### 2. **Memory Management**
 
-- 分批处理大文档
-- 及时清理临时变量
+- Process large documents in batches
+- Clean up temporary variables promptly
 
-### 3. **并行处理**
+### 3. **Parallel Processing**
 
-- 可以修改脚本支持多进程处理
-- 注意向量数据库的并发限制
+- Can modify the script to support multi-process processing
+- Note the concurrency limitations of the vector database
 
-## 扩展功能
+## Extended Features
 
-### 1. **支持更多文档格式**
+### 1. **Support More Document Formats**
 
-- Word 文档 (.docx)
-- 纯文本文件 (.txt)
-- Markdown 文件 (.md)
+- Word documents (.docx)
+- Plain text files (.txt)
+- Markdown files (.md)
 
-### 2. **增强的分块策略**
+### 2. **Enhanced Chunking Strategies**
 
-- 基于表格的分块
-- 基于图片的分块
-- 基于代码块的分块
+- Table-based chunking
+- Image-based chunking
+- Code block-based chunking
 
-### 3. **多语言支持**
+### 3. **Multi-language Support**
 
-- 中文文档处理
-- 多语言混合文档
+- Chinese document processing
+- Multi-language mixed documents
 
-## 贡献指南
+## Contributing
 
-欢迎提交 Issue 和 Pull Request 来改进这个脚本！
+Welcome to submit Issues and Pull Requests to improve this script!
 
-## 许可证
+## License
 
-本项目采用 MIT 许可证。
+This project is licensed under the MIT License.
