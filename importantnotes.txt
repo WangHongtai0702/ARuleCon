@@ -1,0 +1,40 @@
+all location: C:\Users\dcsv414
+arulecon location: C:\Users\dcsv414\arulecon
+
+python location:
+C:\Users\dcsv414\AppData\Local\Programs\Python\Python310
+
+venvname: arulecon
+
+to activate venv:
+C:\Users\dcsv414\AppData\Local\Programs\Python\Python310\arulecon\Scripts\activate
+
+To run:
+cd C:\Users\dcsv414\ARuleCon
+to run:
+go to arulecon
+streamlit run app.py
+
+
+To clone in a new VM go gitbash:
+git clone https://github.com/wanghongtai0702/arulecon
+no python requirements, no windows version requirements.
+
+To create a new python env
+python -m venv arulecon
+
+arulecon20251024\Scripts\activate
+
+Need to create new env file. 
+echo "OPENAI_API_KEY=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" > .env
+OpenAI key:
+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
+echo "MODEL_NAME=gpt-4o-mini" >> .env
+
+Backend .env file for api key need to exist. once exist, we can edit the api key on UI directly. 
+
+
+to do batch convert:
+
+python script/csv_rule_conversion.py --csv script/arulecon_data/QRadartoGoogleSecops_batchconvert_5.csv --column qradar_rule --source "IBM QRadar" --target "Google Chronicle"
+

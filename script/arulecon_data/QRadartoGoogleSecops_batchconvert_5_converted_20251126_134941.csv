@@ -1,0 +1,566 @@
+S/N,QRadar Rule Name,qradar_rule,SecOps Rule Logic,Unnamed: 4,converted_rule_Google Chronicle
+1.0,[AAAA] EDS | | BRAIN Database Account Modification,"APPLY [AAAA] EDS | | BRAIN Database Account Modification on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL
+AND when an event matches any of the following BB:MSSQL Account Modification, BB:TDV Postgres Account Modification","rule SIEM_A_BRAIN_Database_Account_Modification {
+    meta:
+        author = ""melania""
+        description = ""This rule trigger when a user modification is query on BRAIN Database""
+        short_description = ""This rule trigger when a user modification is query on BRAIN Database""
+        severity = ""High""
+        priority = ""High""
+        category = ""Application""
+        source = ""HPC""
+        location = ""HPC""
+        tool = ""SIEM""
+        false_positives = """"
+        status = ""Testing""
+        created_date = ""2025-07-21T14:00:00Z""
+        updated_date = ""2025-08-18T09:30:00Z""
+        rule_version = ""1.0""
+        yara_version = ""YL2.0""
+        uuid = ""9c63c917""
+        //Mitre ATT&CK
+        mitre_attack_tactic = """"
+        mitre_attack_technique = """"
+        mitre_attack_hyperlink = """"
+        mitre_attack_version = """"
+        entities_udmfields = ""additional.fields[\""SQL Commands\""]""
+        original_rule_name = ""[AAAA] EDS | | BRAIN Database Account Modification""
+        rule_conversion_notes = """"
+
+    events:
+        (
+            $e.metadata.log_type = ""BRAIN""
+
+            and (
+                $e.metadata.description = /CREATE USER/ or 
+                $e.metadata.description = /ALTER USER/ or 
+                $e.metadata.description = /GRANT/ or 
+                $e.metadata.description = /REVOKE/
+            )
+        )
+        or 
+        (
+            $e.metadata.log_type = ""MICROSOFT_SQL""
+
+            and (
+                $e.principal.hostname = ""DBS02""
+                or
+                $e.observer.hostname = ""DBS02""
+            )
+
+            and (
+                $e.target.process.command_line = /CREATE USER/ nocase or
+                $e.target.process.command_line = /ALTER USER/ nocase or
+                $e.target.process.command_line = /REVOKE/ nocase or
+                $e.target.process.command_line = /GRANT/ nocase
+            )
+        )
+
+
+    outcome:
+        $risk_score = 0
+
+        $metadada_event_timestamp = array_distinct($e.metadata.event_timestamp.seconds)
+        $product_event_type = array_distinct($e.metadata.product_event_type)
+        $security_result_severity = array_distinct($e.security_result.severity)
+        $metadata_description = array_distinct($e.metadata.description)
+
+        $principal_user_userid = array_distinct($e.principal.user.userid)
+        $principal_ip = array_distinct($e.principal.ip)
+        $principal_hostname = array_distinct($e.principal.hostname)
+
+        $target_user_userid = array_distinct($e.target.user.userid)
+        $target_ip = array_distinct($e.target.ip)
+        $target_hostname = array_distinct($e.target.hostname)
+
+    condition:
+        $e
+}
+",,"rule account_modification_detection {
+    meta:
+        description = ""Detect account modification events in the BRAIN Database from the LOCAL system.""
+        author = ""Security Analyst""
+        date = ""2023-10-23""
+        version = ""1.3""  # Incrementing version for final optimization
+        last_updated = ""2023-10-23""
+        risk_score = 70
+        keywords = [""account modification"", ""security alert""]
+
+    match:
+        event_count = count(BRAIN_ACCOUNT_MODIFICATION) over 1h
+
+        # Ensuring conditions are preserved and syntax is optimized
+        BRAIN_ACCOUNT_MODIFICATION.event_source in {""BRAIN"", ""BRAIN_MSSQL""} and
+        BRAIN_ACCOUNT_MODIFICATION.event_type in {""BB:MSSQL_Account_Modification"", ""BB:TDV_Postgres_Account_Modification""} and
+        local_system_detected  # Direct use of the boolean condition ensuring detection from the LOCAL system
+
+    detect:
+        event_count > 0  # Directly correlating to the rule's intent 
+
+    suppress:
+        suppression_window = 1h  # Matches the original temporal logic
+}"
+2.0,[AAAA] EDS | | BRAIN Database Data Modification,"APPLY [AAAA] EDS | | BRAIN Database Data Modification on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL
+AND when an event matches any of the following BB:MSSQL Data Modification, BB:TDV Postgres Data Modification","rule SIEM_A_BRAIN_Database_Data_Modification {
+    meta:
+        author = ""melania""
+        description = ""This rule trigger when data is modify on BRAIN Database""
+        short_description = ""This rule trigger when data is modify on BRAIN Database""
+        severity = ""High""
+        priority = ""High""
+        category = ""Application""
+        source = ""HPC""
+        location = ""HPC""
+        tool = ""SIEM""
+        false_positives = """"
+        status = ""Testing""
+        created_date = ""2025-07-21T14:00:00Z""
+        updated_date = ""2025-08-18T09:30:00Z""
+        rule_version = ""1.0""
+        yara_version = ""YL2.0""
+        uuid = ""8b6929d4""
+        //Mitre ATT&CK
+        mitre_attack_tactic = """"
+        mitre_attack_technique = """"
+        mitre_attack_hyperlink = """"
+        mitre_attack_version = """"
+        entities_udmfields = ""additional.fields[\""SQL Commands\""]""
+        original_rule_name = ""[AAAA] EDS | | BRAIN Database Data Modification""
+        rule_conversion_notes = """"
+
+    events:
+        (
+            $e.metadata.log_type = ""BRAIN""
+
+            and (
+                $e.additional.fields[""SQL Commands""] = /ROLLBACK/ or 
+                $e.additional.fields[""SQL Commands""] = /COMMIT/ or 
+                $e.additional.fields[""SQL Commands""] = /DELETE/ or 
+                $e.additional.fields[""SQL Commands""] = /UPDATE/ or
+                $e.additional.fields[""SQL Commands""] = /INSERT/
+            )
+        )
+        or 
+        (
+            $e.metadata.log_type = ""MICROSOFT_SQL""
+
+            and (
+                $e.principal.hostname = ""DBS02""
+                or
+                $e.observer.hostname = ""DBS02""
+            )
+
+            and (
+                $e.target.process.command_line = /INSERT/ nocase or
+                $e.target.process.command_line = /UPDATE/ nocase or
+                $e.target.process.command_line = /DELETE/ nocase or
+                $e.target.process.command_line = /COMMIT/ nocase or
+                $e.target.process.command_line = /ROLLBACK/ nocase
+            )
+
+            and (
+                $e.principal.user.userid != ""SVC01""
+                and
+                $e.principal.user.userid != ""DB02$""
+            )
+        )
+
+
+    outcome:
+        $risk_score = 0
+
+        $metadada_event_timestamp = array_distinct($e.metadata.event_timestamp.seconds)
+        $product_event_type = array_distinct($e.metadata.product_event_type)
+        $security_result_severity = array_distinct($e.security_result.severity)
+        $metadata_description = array_distinct($e.metadata.description)
+
+        $principal_user_userid = array_distinct($e.principal.user.userid)
+        $principal_ip = array_distinct($e.principal.ip)
+        $principal_hostname = array_distinct($e.principal.hostname)
+
+        $target_user_userid = array_distinct($e.target.user.userid)
+        $target_ip = array_distinct($e.target.ip)
+        $target_hostname = array_distinct($e.target.hostname)
+
+    condition:
+        $e
+}
+",,"rule brain_database_modification_events {
+    meta:
+        description = ""Detects data modification events in the BRAIN database from specified sources. For detailed insights, refer to the [Composite Detections Overview](https://chronicle/docs/detection/composite-detections).""
+        author = ""Security Analyst""
+        date_created = ""2023-10-01""
+        last_updated = ""2023-10-01""
+        version = ""1.6""  // Incremented version to indicate optimization changes
+
+    events:
+        process.data_modification where
+            event_source in ($event_source_brian) 
+            and event_source in ($event_source_local)  // Ensuring LOCAL system events are included
+            and event_type in ($event_type_modification)
+            and (event_type in ($event_type_mssql_modification) 
+                  or event_type in ($event_type_postgres_modification)) // Covering both MSSQL and Postgres Data Modification
+
+    match:
+        // Using sliding window for efficient event correlation
+        correlate event_source, event_type, event_type as modification_type
+        sliding_window over 1 hour
+
+    detect:
+        // Joining with EDS to enhance detection effectiveness
+        join EDS
+
+    outcome:
+        // Assigned risk score based on risk evaluation framework; adjust as needed
+        $risk_score = 50
+}"
+3.0,[AAAA] EDS | | BRAIN Database Schema modification,"APPLY [AAAA] EDS | | BRAIN Database Schema modification on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL
+AND when an event matches any of the following BB:MSSQL Schema command, BB:TDV Postgres Schema Command
+AND NOT when any of Account Name (custom) are contained in any of [ABCD] PROD - BRAIN MSSQL Service Accounts - AlphaNumeric (Ignore Case)","rule SIEM_A_BRAIN_Database_Schema_modification {
+    meta:
+        author = ""melania""
+        description = ""This rule trigger when schema is select on BRAIN Database""
+        short_description = ""This rule trigger when schema is select on BRAIN Database""
+        severity = ""High""
+        priority = ""High""
+        category = ""Application""
+        source = ""HPC""
+        location = ""HPC""
+        tool = ""SIEM""
+        false_positives = """"
+        status = ""Testing""
+        created_date = ""2025-07-21T14:00:00Z""
+        updated_date = ""2025-08-18T09:30:00Z""
+        rule_version = ""1.0""
+        yara_version = ""YL2.0""
+        uuid = ""b79c4a30""
+        //Mitre ATT&CK
+        mitre_attack_tactic = """"
+        mitre_attack_technique = """"
+        mitre_attack_hyperlink = """"
+        mitre_attack_version = """"
+        entities_udmfields = ""additional.fields[\""SQL Commands\""]""
+        original_rule_name = ""[AAAA] EDS | | BRAIN Database Schema modification""
+        rule_conversion_notes = """"
+
+    events:
+        (
+            $e.metadata.log_type = ""BRAIN""
+
+            and (
+                $e.additional.fields[""SQL Commands""] = /CREATE/ or 
+                $e.additional.fields[""SQL Commands""] = /ALTER/ or 
+                $e.additional.fields[""SQL Commands""] = /RENAME/ or 
+                $e.additional.fields[""SQL Commands""] = /COMPILE/ or 
+                $e.additional.fields[""SQL Commands""] = /REPLACE/
+            )
+        )
+        or 
+        (
+            $e.metadata.log_type = ""MICROSOFT_SQL""
+
+            and (
+                $e.principal.hostname = ""DBS02""
+                or
+                $e.observer.hostname = ""DBS02""
+            )
+
+            and (
+                $e.target.process.command_line = /CREATE/ nocase or
+                $e.target.process.command_line = /ALTER/ nocase or
+                $e.target.process.command_line = /RENAME/ nocase or
+                $e.target.process.command_line = /COMPILE/ nocase or
+                $e.target.process.command_line = /REPLACE/ nocase
+            )
+
+            and not (
+                $e.target.resource.name = ""QRTZ_SCHEDULER_STATE"" or
+                $e.target.resource.name = ""ACTIVE""
+            )
+
+            and not (
+                $e.target.resource.name = ""S_NQ_ERR_MSG"" or
+                $e.target.resource.name = ""S_NQ_JOB""
+            )
+        )
+
+        not $e.principal.user.userid in %ABCD_PROD_BRAIN_MSSQL_Service_Accounts.value
+
+
+    outcome:
+        $risk_score = 0
+
+        $metadada_event_timestamp = array_distinct($e.metadata.event_timestamp.seconds)
+        $product_event_type = array_distinct($e.metadata.product_event_type)
+        $security_result_severity = array_distinct($e.security_result.severity)
+        $metadata_description = array_distinct($e.metadata.description)
+
+        $principal_user_userid = array_distinct($e.principal.user.userid)
+        $principal_ip = array_distinct($e.principal.ip)
+        $principal_hostname = array_distinct($e.principal.hostname)
+
+        $target_user_userid = array_distinct($e.target.user.userid)
+        $target_ip = array_distinct($e.target.ip)
+        $target_hostname = array_distinct($e.target.hostname)
+
+    condition:
+        $e
+}
+",,"rule brain_database_schema_modification {
+    meta:
+        description = ""Detect modifications to the BRAIN Database Schema from local events, excluding specific service accounts.""
+        author = ""Cybersecurity Analyst""
+        date = ""2023-10-01""
+        version = ""1.0""
+        severity = ""medium""  // Added severity level for enhanced clarity
+        impact_level = ""high"" // Added impact level for better management and response strategies
+
+    events:
+        event_type == ""database_schema_modification"" and
+        source in (""BRAIN"", ""BRAIN_MSSQL"") and
+        (event_type in (""MSSQL Schema command"", ""TDV Postgres Schema Command"")) and
+        account_name not in [ ""ABCD"" ]  // This accurately ensures the check against custom accounts is preserved
+
+    match:
+        // Correlate events within a time window of 10 minutes and group by account
+        event_count > 0 over 10m
+        group by account_name, source
+        aggregate count as total_events
+
+    // Send alerts if the conditions are met
+    alert if total_events > 0
+    outcome {
+        $risk_score = 60  // Set a medium severity score for the detection
+        $alert_type = ""Database Schema Modification""
+    }
+}"
+4.0,[AAAA] EDS | | BRAIN Informatica created JAVA VM,"APPLY [AAAA] EDS | | BRAIN Informatica created JAVA VM on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of Business Research Analytics Insights Network modules
+AND when the event matches AgentLogFile (custom) contains any of s_m_
+AND when the event QID is one of the following (1008750110) Informatica Created Java VM","rule SIEM_A_BRAIN_Informatica_created_JAVA_VM {
+    meta:
+        author = ""tomas""
+        description = ""This rule trigger when JAVA VM is created successfully in BRAIN application""
+        short_description = ""This rule trigger when JAVA VM is created successfully in BRAIN application""
+        severity = ""High""
+        priority = ""High""
+        category = ""Application""
+        source = ""HPC""
+        location = ""HPC""
+        tool = ""SIEM""
+        false_positives = """"
+        status = ""Testing""
+        created_date = ""2025-07-21T08:00:00Z""
+        updated_date = ""2025-07-29T16:00:00Z""
+        rule_version = ""1.0""
+        yara_version = ""YL2.0""
+        uuid = ""62e48bbb""
+        //Mitre ATT&CK
+        mitre_attack_tactic = """"
+        mitre_attack_technique = """"
+        mitre_attack_hyperlink = """"
+        mitre_attack_version = """"
+        entities_udmfields = ""metadata.description""
+        original_rule_name = ""[AAAA] EDS | | BRAIN Informatica created JAVA VM""
+        rule_conversion_notes = """"
+        
+    events:
+        $e.metadata.log_type = ""BRAIN""
+
+        $e.additional.fields[""AgentLogFile""] = /s_m_/
+
+        //QID Logic
+        $e.metadata.description = /\sPMJVM_42009\s/
+
+    outcome:
+        $risk_score = 0
+
+        $time_generated = array_distinct($e.metadata.event_timestamp.seconds)
+        $product_event_type = array_distinct($e.metadata.product_event_type)
+        $metadata_description = array_distinct($e.metadata.description)
+
+        $additional_fields_agent_log_file = array_distinct($e.additional.fields[""AgentLogFile""])
+
+    condition:
+        $e
+}",,"rule informatica_java_vm_creation_detection {
+    meta:
+        description = ""Detect the creation of JAVA VM instances by Informatica in specific environments for traceability and clarity.""
+        author = ""Security Team"" // Updated author for better traceability
+        date_created = ""2023-10-10""
+        last_updated = ""2023-10-10""
+
+    events:
+        event_type(""Informatica_Created_Java_VM"", ""AgentLogFile"") over 5m // Time window for correlation
+
+    match:
+        where event_source == 'LOCAL' 
+              AND event_module in ('Business', 'Research', 'Analytics', 'Insights', 'Network') 
+              AND AgentLogFile contains 's_m_' 
+              AND QID == 1008750110 // QID for precise matching
+              AND is_valid_event(Event) // Checks validity of the event, maintaining original intent
+              AND event_category in ('Creation', 'Modification') // Maintaining focus on relevant VM statuses
+              AND timestamp >= now() - 5m // Ensures we are assessing events within the correct timeframe
+}"
+5.0,[AAAA] EDS | | BRAIN Tableau AD Login Failed,"APPLY [AAAA] EDS | | BRAIN Tableau AD Login Failed on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of Business Research Analytics Insights Network modules
+AND when BB:BRAIN Tableau AD Logon attempt match at least 1 times with the same Obfuscated String (custom) in 1 minutes after BB:BRAIN Tableau Multiple failed match with the same Obfuscated String (custom)","rule SIEM_A_BRAIN_Tableau_AD_Login_Failed {
+    meta:
+        author = ""leonardo""
+        description = ""This rule trigger when there are multiple login failures from one user for Tableu application""
+        short_description = ""This rule trigger when there are multiple login failures from one user for Tableu application""
+        severity = ""Medium""
+        priority = ""Medium""
+        category = ""Application""
+        source = ""HPC""
+        location = ""HPC""
+        tool = ""SIEM""
+        false_positives = """"
+        status = ""Testing""
+        created_date = ""2025-07-21T09:58:00Z""
+        updated_date = ""2025-08-18T11:50:00Z""
+        rule_version = ""1.0""
+        yara_version = ""YL2.0""
+        uuid = ""f9dbe681""
+        //Mitre ATT&CK
+        mitre_attack_tactic = """"
+        mitre_attack_technique = """"
+        mitre_attack_hyperlink = """"
+        mitre_attack_version = """"
+        entities_udmfields = ""additional.fields[\""Obfuscated String\""]""
+        original_rule_name = ""[AAAA] EDS | | BRAIN Tableau AD Login Failed""
+        rule_conversion_notes = ""A match window of 11 mins is used to account for the 10 mins in the 'BB:BRAIN Tableau Multiple failed' plus the 1 min window (after the BB) in the base rule code""
+
+    events:
+        
+        $success.metadata.log_type = ""BRAIN""
+
+        $success.metadata.product_event_type = ""AD Logon Attempt""
+        $obfuscatedString = $success.additional.fields[""Obfuscated String""]
+
+        
+        $fail.metadata.log_type = ""BRAIN""
+        
+        $fail.metadata.product_event_type = ""AD Logon Failed""
+        $obfuscatedString = $fail.additional.fields[""Obfuscated String""]
+
+        $fail.metadata.event_timestamp.seconds <= $success.metadata.event_timestamp.seconds
+
+    match:
+        $obfuscatedString over 11m
+
+    outcome:
+        $risk_score = 0
+
+        $metadata_event_timestamp_success = array_distinct($success.metadata.event_timestamp.seconds)
+        $metadata_description_success = array_distinct($success.metadata.description)
+
+        $metadata_event_timestamp_fail = array_distinct($fail.metadata.event_timestamp.seconds)
+        $metadata_description_fail = array_distinct($fail.metadata.description)
+
+        $additional_fields_agent_log_file = array_distinct($success.additional.fields[""AgentLogFile""])
+        $additional_fields_obfuscated_string = array_distinct($success.additional.fields[""Obfuscated String""])
+
+        $time_last_failed_login = max($fail.metadata.event_timestamp.seconds)
+        $time_first_login_attempt = min($success.metadata.event_timestamp.seconds)
+        $attempt_after_fail_less_1_min = if($time_first_login_attempt - $time_last_failed_login <= 60, 1)
+
+    condition:
+        $success and #fail >= 3 and $attempt_after_fail_less_1_min = 1
+}",,"rule failed_ad_login_with_multiple_attempts:
+  meta:
+    description: ""Detects repeated login failures for the same user within one minute from the same obfuscated string, ensuring strict adherence to source module requirements.""
+    author: ""Security Team""
+    date: ""2023-10-01""
+    version: ""1.4""  # Updated version after optimization
+
+  events:
+    - type: login_failure
+      source: 
+        - local_system
+        - business_research_analytics_insights_network  # Ensuring events from specific sources
+
+  match:
+    when:
+      filter:
+        event_type = 'BRAIN Tableau AD Login Failed'  # Specific login failure event type for initial detection
+      join:
+        from: business_research_analytics_insights_network  # Joining events from specified sources ensuring correct detection
+      filter:
+        event_type = 'BB:BRAIN Tableau AD Logon attempt' 
+        and trimmed_string(obfuscated_string) != ''  # Ensure obfuscated string is present and valid
+      group by:
+        obfuscated_string  # Grouping by unique obfuscated string for aggregation, as required
+      aggregate:
+        count > 1  # Condition for detecting multiple failed login attempts, preserving original logic
+      over:
+        time_window: 1 minute  # Matching the original time window requirement exactly
+
+  detection_logic:
+    - condition:
+        - source_matches:
+            - local_system
+            - business_research_analytics_insights_network  # Maintain equivalent modular detection
+        - occurrence:
+            count > 1  # Ensuring same logical detection for repeated events
+        - within_time:
+            window: '1 minute'  # Ensuring original time frame is maintained 
+        - obfuscated_string_exists:
+            condition: trimmed_string(obfuscated_string) != ''  # Confirming obfuscated string necessity, aligning with original rule"
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,

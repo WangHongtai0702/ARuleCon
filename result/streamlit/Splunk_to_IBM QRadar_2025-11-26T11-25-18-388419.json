@@ -1,0 +1,45 @@
+{
+  "source_rule_type": "Splunk",
+  "target_rule_type": "IBM QRadar",
+  "start_time": "2025-11-26T11:25:18.388419",
+  "end_time": "2025-11-26T11:25:20.186545",
+  "total_duration_seconds": 1.798126,
+  "original_rule": "AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL\nA",
+  "final_rule": "Error generating IBM QRadar rule: Error code: 401 - {'error': {'message': 'Incorrect API key provided: APPLY [A*****************************************************************************************************************************************************************************************************************************************************************************************tion. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+  "rule_analysis_steps": [
+    {
+      "step_name": "rule_analysis",
+      "input_content": "AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL\nA",
+      "output_content": "Error analyzing rule: Error code: 401 - {'error': {'message': 'Incorrect API key provided: APPLY [A*****************************************************************************************************************************************************************************************************************************************************************************************tion. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+      "timestamp": "2025-11-26T11:25:18.755447",
+      "metadata": {
+        "source_rule_type": "Splunk",
+        "model": "gpt-5-mini"
+      }
+    }
+  ],
+  "ir_generation_steps": [
+    {
+      "step_name": "ir_generation",
+      "input_rule": "AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL\nA",
+      "generated_ir": "{\n  \"rule_name\": \"error_rule\",\n  \"description\": \"Error generating IR: Error code: 401 - {'error': {'message': 'Incorrect API key provided: APPLY [A*****************************************************************************************************************************************************************************************************************************************************************************************tion. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}\",\n  \"data_source\": \"unknown\",\n  \"event_type\": \"error\",\n  \"steps\": []\n}",
+      "timestamp": "2025-11-26T11:25:19.105763",
+      "metadata": {
+        "source_rule_type": "Splunk",
+        "model": "gpt-5-mini",
+        "rule_analysis_used": true
+      }
+    }
+  ],
+  "final_ir": "{\n  \"rule_name\": \"error_rule\",\n  \"description\": \"Error generating IR: Error code: 401 - {'error': {'message': 'Incorrect API key provided: APPLY [A*****************************************************************************************************************************************************************************************************************************************************************************************tion. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}\",\n  \"data_source\": \"unknown\",\n  \"event_type\": \"error\",\n  \"steps\": []\n}",
+  "todo_list": null,
+  "keyword_adjustment_steps": [],
+  "rag_search_steps": [],
+  "rule_optimization_steps": [],
+  "optimization_results": [],
+  "semantic_optimization_steps": [],
+  "total_tasks_completed": 0,
+  "overall_semantic_score": 1.0,
+  "success": true,
+  "error_message": null
+}

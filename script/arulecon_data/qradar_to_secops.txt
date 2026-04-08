@@ -1,0 +1,51 @@
+original 1 qradar:
+
+APPLY [AAAA] EDS | | BRAIN Database Account Modification on events which are detected by the LOCAL system
+AND when the event(s) were detected by one or more of BRAIN, BRAIN_MSSQL
+AND when an event matches any of the following BB:MSSQL Account Modification, BB:TDV Postgres Account Modification
+
+Converted:
+rule database_account_modification_detection {
+  meta:
+    author = "Your Name"
+    description = "Detect suspicious modifications to database accounts across BRAIN, BRAIN_MSSQL, and LOCAL systems."
+    creation_date = "2023-10-15"
+    version = "1.1"
+    severity = "medium"
+
+  // Risk score applied for prioritization
+  risk_score = 50
+
+  events:
+    event1 {
+      select database
+      where
+        event_source IN ("LOCAL") and
+        event_type IN ("BB:MSSQL Account Modification", "BB:TDV Postgres Account Modification")
+    }
+
+    event2 {
+      select database
+      where
+        event_source IN ("BRAIN", "BRAIN_MSSQL") and
+        event_type IN ("BB:MSSQL Account Modification", "BB:TDV Postgres Account Modification")
+    }
+
+  match:
+    any(
+      $event1_database_system == event2.database_system and
+      $event1_account_modified == event2.account_modified and
+      $event1_event_type == event2.event_type
+    )
+
+  output fields:
+    inner select
+      event1.account_modified AS account,
+      event1.database_system AS system,
+      event1.event_source AS source1,
+      event2.event_source AS source2,
+      event1.event_type AS type
+
+  condition:
+    within 1h
+}
